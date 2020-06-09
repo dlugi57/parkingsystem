@@ -5,19 +5,20 @@ import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
 
-    public void calculateFare(Ticket ticket){
-        if( (ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime())) ){
-            throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
+    public void calculateFare(Ticket ticket) {
+        if ((ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()))) {
+            throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
         }
-        //chenged to the get time methode
+
         double inHour = ticket.getInTime().getTime();
         double outHour = ticket.getOutTime().getTime();
 
         //TODO: Some tests are failing here. Need to check if this logic is correct
-        //add some reduction
-        double duration = (outHour - inHour)/ (1000 * 60 * 60);
 
-        switch (ticket.getParkingSpot().getParkingType()){
+        double duration = (outHour - inHour) / (1000 * 60 * 60);
+        // TODO: 09/06/2020 if duration is less than 30 min free
+
+        switch (ticket.getParkingSpot().getParkingType()) {
             case CAR: {
                 ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
                 break;
@@ -26,7 +27,8 @@ public class FareCalculatorService {
                 ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
                 break;
             }
-            default: throw new IllegalArgumentException("Unkown Parking Type");
+            default:
+                throw new IllegalArgumentException("Unkown Parking Type");
         }
     }
 }

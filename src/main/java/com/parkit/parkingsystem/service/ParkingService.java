@@ -59,6 +59,8 @@ public class ParkingService {
         return inputReaderUtil.readVehicleRegistrationNumber();
     }
 
+    // TODO: 09/06/2020 check if car already exist to do not duplicate it and to set 5% of reduction
+
     public ParkingSpot getNextParkingNumberIfAvailable(){
         int parkingNumber=0;
         ParkingSpot parkingSpot = null;
