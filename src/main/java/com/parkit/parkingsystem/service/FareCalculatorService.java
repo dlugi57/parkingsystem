@@ -18,6 +18,7 @@ public class FareCalculatorService {
         double duration = (outHour - inHour) / (1000 * 60 * 60);
         // TODO: 09/06/2020 if duration is less than 30 min free
 
+
         switch (ticket.getParkingSpot().getParkingType()) {
             case CAR: {
                 ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
