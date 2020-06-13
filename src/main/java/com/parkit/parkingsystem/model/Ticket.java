@@ -42,9 +42,8 @@ public class Ticket {
     }
 
     public void setPrice(double price) {
-        RoundUtil roundDouble = new RoundUtil();
-
-        this.price = roundDouble.round(price,2);
+        // TODO: 13/06/2020 is that is in right place ? 
+        this.price = RoundUtil.round(price, 2);
     }
 
     public Date getInTime() {
