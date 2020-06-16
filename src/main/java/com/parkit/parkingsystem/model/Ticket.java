@@ -2,7 +2,6 @@ package com.parkit.parkingsystem.model;
 
 import com.parkit.parkingsystem.util.RoundUtil;
 
-import java.util.Calendar;
 import java.util.Date;
 
 public class Ticket {
@@ -12,6 +11,7 @@ public class Ticket {
     private double price;
     private Date inTime;
     private Date outTime;
+    private boolean recurrentReduction;
 
     public int getId() {
         return id;
@@ -60,5 +60,13 @@ public class Ticket {
 
     public void setOutTime(Date outTime) {
         this.outTime = outTime;
+    }
+
+    public boolean isRecurrentReduction() {
+        return recurrentReduction;
+    }
+
+    public void setRecurrentReduction(boolean recurrentReduction) {
+        this.recurrentReduction = recurrentReduction;
     }
 }

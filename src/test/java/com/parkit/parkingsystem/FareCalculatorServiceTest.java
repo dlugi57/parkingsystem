@@ -196,7 +196,7 @@ public class FareCalculatorServiceTest {
             ticket.setRecurrentReduction(true);
             fareCalculatorService.calculateFare(ticket);
             //assertEquals((24 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
-            assertThat(ticket.getPrice()).isEqualTo((Fare.CAR_RATE_PER_HOUR * Fare.REDUCTION_OF_RECURRENT_USE));
+            assertThat(ticket.getPrice()).isEqualTo(RoundUtil.round(Fare.CAR_RATE_PER_HOUR - (Fare.CAR_RATE_PER_HOUR * Fare.REDUCTION_OF_RECURRENT_USE), 2));
         }
     }
 }
