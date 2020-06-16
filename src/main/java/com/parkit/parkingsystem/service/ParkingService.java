@@ -30,8 +30,19 @@ public class ParkingService {
     public void processIncomingVehicle() {
         try {
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
-            if (parkingSpot != null && parkingSpot.getId() > 0) {
-                String vehicleRegNumber = getVehichleRegNumber();
+            String vehicleRegNumber = getVehichleRegNumber();
+
+            //if (checkIncomingVehicle(vehicleRegNumber) == true) {
+             //   System.out.println("REcurrrrrrrrrrrrrrrrrrrrrrent");
+            //};
+
+            if (parkingSpot != null && parkingSpot.getId() > 0 && checkIncomingVehicle(vehicleRegNumber) != null) {
+
+
+
+
+
+
                 parkingSpot.setAvailable(false);
                 parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false
 
@@ -44,6 +55,11 @@ public class ParkingService {
                 ticket.setPrice(0);
                 ticket.setInTime(inTime);
                 ticket.setOutTime(null);
+                if (checkIncomingVehicle(vehicleRegNumber) == true){
+                    ticket.setRecurrentReduction(true);
+                    System.out.println("setRecurrentReduction");
+                }
+
                 ticketDAO.saveTicket(ticket);
                 System.out.println("Generated Ticket and saved in DB");
                 System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
@@ -60,6 +76,32 @@ public class ParkingService {
     }
 
     // TODO: 09/06/2020 check if car already exist to do not duplicate it and to set 5% of reduction
+    public Boolean checkIncomingVehicle(String vehicleRegNumber) {
+        Boolean checkVehicle = null;
+        try {
+            Ticket checkTicket = new TicketDAO().getTicket(vehicleRegNumber);
+            if (checkTicket != null) {
+                if (checkTicket.getOutTime() == null){
+                    checkVehicle = null;
+                    throw new Exception("Vehicle already exist please type registration number once again");
+
+                    //already exist
+                }else{
+                    //recurrent
+                    checkVehicle = true;
+                }
+            } else{
+                //car don't exist
+                checkVehicle = false;
+            }
+        } catch (IllegalArgumentException ie) {
+            logger.error("checkIncomingVehicle 1", ie);
+        } catch (Exception e) {
+            logger.error("checkIncomingVehicle 2", e);
+        }
+        return checkVehicle;
+    }
+
 
     public ParkingSpot getNextParkingNumberIfAvailable() {
         int parkingNumber = 0;
@@ -103,7 +145,11 @@ public class ParkingService {
         try {
             String vehicleRegNumber = getVehichleRegNumber();
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
+
+
+
             Date outTime = new Date();
+
             ticket.setOutTime(outTime);
             fareCalculatorService.calculateFare(ticket);
             if (ticketDAO.updateTicket(ticket)) {

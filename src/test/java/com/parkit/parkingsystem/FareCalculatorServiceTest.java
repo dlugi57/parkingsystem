@@ -80,6 +80,7 @@ public class FareCalculatorServiceTest {
             //assertThrows(IllegalArgumentException.class, () -> fareCalculatorService.calculateFare(ticket));
             assertThatThrownBy(() -> fareCalculatorService.calculateFare(ticket)).isInstanceOf(IllegalArgumentException.class);
         }
+
     }
 
     @Nested
