@@ -155,7 +155,7 @@ public class FareCalculatorServiceTest {
         @DisplayName("Given car parked for less than half hour, when do the calculation, then fare should be equal to 0")
         public void calculateFareCarWithLessThanHalfHourParkingTime() {
             Date inTime = new Date();
-            inTime.setTime(System.currentTimeMillis() - (15 * 60 * 1000));//45 minutes parking time should give 3/4th parking fare
+            inTime.setTime(System.currentTimeMillis() - (15 * 60 * 1000));//15 minutes parking time
             Date outTime = new Date();
             ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
 
@@ -180,6 +180,23 @@ public class FareCalculatorServiceTest {
             fareCalculatorService.calculateFare(ticket);
             //assertEquals((24 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
             assertThat(ticket.getPrice()).isEqualTo((24 * Fare.CAR_RATE_PER_HOUR));
+        }
+
+        @Test
+        @DisplayName("Given car parked for recurrent time, when do the calculation, then we add reduction to the summary of fare")
+        public void calculateFareCarWithRecurrentUserReduction() {
+            Date inTime = new Date();
+            inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));//1 hours parking time
+            Date outTime = new Date();
+            ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+
+            ticket.setInTime(inTime);
+            ticket.setOutTime(outTime);
+            ticket.setParkingSpot(parkingSpot);
+            ticket.setRecurrentReduction(true);
+            fareCalculatorService.calculateFare(ticket);
+            //assertEquals((24 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
+            assertThat(ticket.getPrice()).isEqualTo((Fare.CAR_RATE_PER_HOUR * Fare.REDUCTION_OF_RECURRENT_USE));
         }
     }
 }
