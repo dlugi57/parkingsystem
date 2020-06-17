@@ -7,7 +7,12 @@
     <artifactId>parking-system</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-
+    <name>Parking System</name>
+    <inceptionYear>2020</inceptionYear>
+    <description>
+        A command line app for managing the parking system. This app uses Java to run and stores the data in Mysql DB.
+    </description>
+    <url>https://github.com/dlugi57/parkingsystem</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>

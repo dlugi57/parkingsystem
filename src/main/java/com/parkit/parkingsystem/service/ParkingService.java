@@ -34,23 +34,14 @@ public class ParkingService {
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             String vehicleRegNumber = getVehichleRegNumber();
 
-            //if (checkIncomingVehicle(vehicleRegNumber) == true) {
-             //   System.out.println("REcurrrrrrrrrrrrrrrrrrrrrrent");
-            //};
-
             if (parkingSpot != null && parkingSpot.getId() > 0 && checkIncomingVehicle(vehicleRegNumber) != null) {
-
-
-
-
-
 
                 parkingSpot.setAvailable(false);
                 parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false
 
                 Date inTime = new Date();
                 Ticket ticket = new Ticket();
-                //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
+                //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, RECURRENT_REDUCTION)
                 //ticket.setId(ticketID);
                 ticket.setParkingSpot(parkingSpot);
                 ticket.setVehicleRegNumber(vehicleRegNumber);
@@ -59,10 +50,10 @@ public class ParkingService {
                 ticket.setOutTime(null);
                 if (checkIncomingVehicle(vehicleRegNumber) == true){
                     // TODO: 17/06/2020 how to do this properly
-                    String reductionInfo = "You will profit of: " + (100 - 100 * Fare.REDUCTION_OF_RECURRENT_USE) + " % of reduction.";
-                    logger.info(reductionInfo);
-                    
-                    System.out.println("You will profit of: " + (100 - 100 * Fare.REDUCTION_OF_RECURRENT_USE) + " % of reduction.");
+                    // String . format
+                    logger.info("You will profit of: " + (100 - 100 * Fare.REDUCTION_OF_RECURRENT_USE) + " % of reduction.");
+                    System.out.println("1You will profit of: " + (100 - 100 * Fare.REDUCTION_OF_RECURRENT_USE) + " % of reduction.");
+
                     ticket.setRecurrentReduction(true);
                 }
 
@@ -81,6 +72,7 @@ public class ParkingService {
         return inputReaderUtil.readVehicleRegistrationNumber();
     }
 
+    // TODO: 17/06/2020 Dirty code 
     // TODO: 09/06/2020 check if car already exist to do not duplicate it and to set 5% of reduction
     public Boolean checkIncomingVehicle(String vehicleRegNumber) {
         Boolean checkVehicle = null;
