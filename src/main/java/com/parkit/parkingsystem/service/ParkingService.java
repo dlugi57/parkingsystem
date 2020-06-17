@@ -1,11 +1,13 @@
 package com.parkit.parkingsystem.service;
 
+import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.util.InputReaderUtil;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,8 +58,12 @@ public class ParkingService {
                 ticket.setInTime(inTime);
                 ticket.setOutTime(null);
                 if (checkIncomingVehicle(vehicleRegNumber) == true){
+                    // TODO: 17/06/2020 how to do this properly
+                    String reductionInfo = "You will profit of: " + (100 - 100 * Fare.REDUCTION_OF_RECURRENT_USE) + " % of reduction.";
+                    logger.info(reductionInfo);
+                    
+                    System.out.println("You will profit of: " + (100 - 100 * Fare.REDUCTION_OF_RECURRENT_USE) + " % of reduction.");
                     ticket.setRecurrentReduction(true);
-                    System.out.println("setRecurrentReduction");
                 }
 
                 ticketDAO.saveTicket(ticket);
@@ -83,7 +89,8 @@ public class ParkingService {
             if (checkTicket != null) {
                 if (checkTicket.getOutTime() == null){
                     checkVehicle = null;
-                    throw new Exception("Vehicle already exist please type registration number once again");
+                    System.out.println("Vehicle already exist please type registration number once again");
+                    //throw new Exception("Vehicle already exist please type registration number once again");
 
                     //already exist
                 }else{
@@ -145,8 +152,6 @@ public class ParkingService {
         try {
             String vehicleRegNumber = getVehichleRegNumber();
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
-
-
 
             Date outTime = new Date();
 
