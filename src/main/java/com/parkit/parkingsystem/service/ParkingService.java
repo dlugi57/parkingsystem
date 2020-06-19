@@ -7,7 +7,6 @@ import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.util.InputReaderUtil;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -77,7 +76,7 @@ public class ParkingService {
     public Boolean checkIncomingVehicle(String vehicleRegNumber) {
         Boolean checkVehicle = null;
         try {
-            Ticket checkTicket = new TicketDAO().getTicket(vehicleRegNumber);
+            Ticket checkTicket = new TicketDAO().checkTicket(vehicleRegNumber);
             if (checkTicket != null) {
                 if (checkTicket.getOutTime() == null){
                     checkVehicle = null;
@@ -106,7 +105,7 @@ public class ParkingService {
         int parkingNumber = 0;
         ParkingSpot parkingSpot = null;
         try {
-            ParkingType parkingType = getVehichleType();
+            ParkingType parkingType = getVehicleType();
             parkingNumber = parkingSpotDAO.getNextAvailableSlot(parkingType);
             if (parkingNumber > 0) {
                 parkingSpot = new ParkingSpot(parkingNumber, parkingType, true);
@@ -121,7 +120,7 @@ public class ParkingService {
         return parkingSpot;
     }
 
-    private ParkingType getVehichleType() {
+    private ParkingType getVehicleType() {
         System.out.println("Please select vehicle type from menu");
         System.out.println("1 CAR");
         System.out.println("2 BIKE");

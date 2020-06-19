@@ -24,6 +24,10 @@ public class ParkingServiceTest {
     private static ParkingService parkingService;
 
     @Mock
+    private Ticket ticket;
+    @Mock
+    private ParkingSpot parkingSpot;
+    @Mock
     private static InputReaderUtil inputReaderUtil;
     @Mock
     private static ParkingSpotDAO parkingSpotDAO;
@@ -36,12 +40,12 @@ public class ParkingServiceTest {
             when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 
             ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
-            Ticket ticket = new Ticket();
+             ticket = new Ticket();
             ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
             ticket.setParkingSpot(parkingSpot);
             ticket.setVehicleRegNumber("ABCDEF");
-            when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-            when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+            //when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+            //when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
 
             when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 
@@ -54,9 +58,45 @@ public class ParkingServiceTest {
 
     @Test
     public void processExitingVehicleTest(){
+
+
+
+        when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+        when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+        // WHEN
         parkingService.processExitingVehicle();
+        // THEN
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+        verify(ticketDAO, Mockito.times(1)).getTicket(anyString());
+        //verify(ticketDAO, Mockito.times(1)).checkTicket(anyString());
+        verify(ticketDAO, Mockito.times(1)).updateTicket(any(Ticket.class));
+    }
+    @Test
+    public void processIncomingVehicleTest(){
+
+
+
+
+
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class)))
+                .thenReturn(1);
+        //when(ticketDAO.checkTicket(anyString())).thenReturn(ticket);
+        //when(parkingSpotDAO.updateParking(parkingSpot)).thenReturn(false);
+        when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
+
+
+        parkingService.processIncomingVehicle();
+
+        verify(inputReaderUtil, times(1)).readSelection();
+        verify(parkingSpotDAO, times(1))
+                .getNextAvailableSlot(any(ParkingType.class));
+        verify(ticketDAO, times(1)).saveTicket(any(Ticket.class));
+        verify(parkingSpotDAO, times(1)).updateParking(any(ParkingSpot.class));
+
+
 
     }
+
 
 }
