@@ -52,7 +52,7 @@ public class FareCalculatorServiceTest {
     class CalculateFareExceptionsTests {
         @Test
         @DisplayName("Given wrong parking type, when do the calculation, then calls NullPointerException")
-        public void calculateFareUnkownType() {
+        public void calculateFareUnknownType() {
             // GIVEN
             Date inTime = new Date();
             inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));

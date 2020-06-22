@@ -41,18 +41,14 @@ public class ParkingService {
                 Date inTime = new Date();
                 Ticket ticket = new Ticket();
                 //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, RECURRENT_REDUCTION)
-                //ticket.setId(ticketID);
                 ticket.setParkingSpot(parkingSpot);
                 ticket.setVehicleRegNumber(vehicleRegNumber);
                 ticket.setPrice(0);
                 ticket.setInTime(inTime);
                 ticket.setOutTime(null);
                 if (checkIncomingVehicle(vehicleRegNumber) == true){
-                    // TODO: 17/06/2020 how to do this properly
-                    // String . format
                     logger.info("You will profit of: " + (100 - 100 * Fare.REDUCTION_OF_RECURRENT_USE) + " % of reduction.");
-                    System.out.println("1You will profit of: " + (100 - 100 * Fare.REDUCTION_OF_RECURRENT_USE) + " % of reduction.");
-
+                    // TODO: 22/06/2020 how to test this
                     ticket.setRecurrentReduction(true);
                 }
 
@@ -120,7 +116,7 @@ public class ParkingService {
         return parkingSpot;
     }
 
-    private ParkingType getVehicleType() {
+    public ParkingType getVehicleType() {
         System.out.println("Please select vehicle type from menu");
         System.out.println("1 CAR");
         System.out.println("2 BIKE");
