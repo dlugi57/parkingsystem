@@ -19,8 +19,7 @@ import org.mockito.quality.Strictness;
 
 import java.util.Date;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -142,14 +141,15 @@ public class ParkingServiceTest {
         }
 
         //getVehichleRegNumber
-        //getNextParkingNumberIfAvailable
+
         @Test
-        void getNextParkingNumberIfAvailableTest() {
+        @Tag("getNextParkingNumberIfAvailableTest")
+        @DisplayName("Get incoming and exiting vehicle test exceptions")
+        void getNextParkingNumberIfAvailableTest() throws Exception {
 
             when(inputReaderUtil.readSelection()).thenReturn(1);
             when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class)))
                     .thenReturn(1);
-
             ParkingSpot ps = parkingService.getNextParkingNumberIfAvailable();
 
             verify(inputReaderUtil, times(1)).readSelection();
@@ -161,6 +161,23 @@ public class ParkingServiceTest {
             assertThat(ps.getParkingType()).isEqualTo(ParkingType.CAR);
             assertThat(ps.isAvailable()).isEqualTo(true);
         }
+
+        @Test
+        @Tag("getNextParkingNumberIfAvailableTest")
+        @DisplayName("Get incoming and exiting vehicle test exceptions")
+        public void Given_fullParking_When_enterParking_Then_noTicketSaved() {
+            when(inputReaderUtil.readSelection()).thenReturn(1);
+            when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class)))
+                    .thenReturn(-1);
+            assertThatExceptionOfType(Exception.class)
+                    .isThrownBy(() -> parkingService.getNextParkingNumberIfAvailable()).withMessageMatching("Index: \\d+, Size: \\d+");
+            //assertThatThrownBy(() -> parkingService.getNextParkingNumberIfAvailable()).isInstanceOf(Exception.class);
+
+            verify(inputReaderUtil, times(1)).readSelection();
+            verify(parkingSpotDAO, times(1))
+                    .getNextAvailableSlot(any(ParkingType.class));
+        }
+
         //getVehicleType
     }
 

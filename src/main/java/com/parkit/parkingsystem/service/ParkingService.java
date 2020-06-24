@@ -97,7 +97,7 @@ public class ParkingService {
     }
 
 
-    public ParkingSpot getNextParkingNumberIfAvailable() {
+    public ParkingSpot getNextParkingNumberIfAvailable() throws Exception {
         int parkingNumber = 0;
         ParkingSpot parkingSpot = null;
         try {
@@ -110,8 +110,10 @@ public class ParkingService {
             }
         } catch (IllegalArgumentException ie) {
             logger.error("Error parsing user input for type of vehicle", ie);
+            throw new Exception("Error fetching parking number from DB. Parking slots might be full a");
         } catch (Exception e) {
             logger.error("Error fetching next available parking slot", e);
+          // throw new Exception("Error fetching parking number from DB. Parking slots might be full aa");
         }
         return parkingSpot;
     }
