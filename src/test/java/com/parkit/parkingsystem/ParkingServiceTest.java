@@ -14,15 +14,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ParkingServiceTest {
 
     private static ParkingService parkingService;
@@ -45,6 +49,8 @@ public class ParkingServiceTest {
             ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
             ticket.setParkingSpot(parkingSpot);
             ticket.setVehicleRegNumber("ABCDEF");
+            // TODO: 24/06/2020 make some clean with the tickets
+            ticket.setOutTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
 
             when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 
@@ -70,6 +76,7 @@ public class ParkingServiceTest {
             parkingService.processExitingVehicle();
             // THEN
             verify(parkingSpotDAO, times(1)).updateParking(any(ParkingSpot.class));
+
             verify(ticketDAO, times(1)).getTicket(anyString());
             verify(ticketDAO, times(1)).updateTicket(any(Ticket.class));
         }
@@ -89,9 +96,9 @@ public class ParkingServiceTest {
             when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class)))
                     .thenReturn(1);
             when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
+            when(ticketDAO.checkTicket(anyString())).thenReturn(ticket);
 
             // WHEN
-            parkingService.checkIncomingVehicle("ABCDEF");
             parkingService.processIncomingVehicle();
             // THEN
             verify(inputReaderUtil, times(1)).readSelection();
@@ -105,7 +112,6 @@ public class ParkingServiceTest {
         @DisplayName("Given incoming bike, when set registration number, then parking place will be allocated and ticket generated")
         public void processIncomingBikeTest() {
             // GIVEN
-            // TODO: 22/06/2020 do i need test this??
             when(inputReaderUtil.readSelection()).thenReturn(2);
             when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class)))
                     .thenReturn(4);
@@ -121,32 +127,55 @@ public class ParkingServiceTest {
             verify(ticketDAO, times(1)).saveTicket(any(Ticket.class));
             verify(parkingSpotDAO, times(1)).updateParking(any(ParkingSpot.class));
         }
-        //@Test
-        //public void checkIncomingBikeTest() {
+        @Test
+        public void checkIncomingVehicleTest() {
 
 
-        //}
+            // TODO: 24/06/2020 make some new tickets with new date out
+            when(ticketDAO.checkTicket(anyString())).thenReturn(ticket);
+
+            Boolean checkVehicle = parkingService.checkIncomingVehicle("ABCDE123");
+
+            verify(ticketDAO, times(1)).checkTicket(anyString());
+
+            assertThat(checkVehicle).isEqualTo(true);
+        }
 
         //getVehichleRegNumber
         //getNextParkingNumberIfAvailable
+        @Test
+        void getNextParkingNumberIfAvailableTest() {
+
+            when(inputReaderUtil.readSelection()).thenReturn(1);
+            when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class)))
+                    .thenReturn(1);
+
+            ParkingSpot ps = parkingService.getNextParkingNumberIfAvailable();
+
+            verify(inputReaderUtil, times(1)).readSelection();
+            verify(parkingSpotDAO, times(1))
+                    .getNextAvailableSlot(any(ParkingType.class));
+
+            //assert
+            assertThat(ps.getId()).isEqualTo(1);
+            assertThat(ps.getParkingType()).isEqualTo(ParkingType.CAR);
+            assertThat(ps.isAvailable()).isEqualTo(true);
+        }
         //getVehicleType
     }
 
-    //@Nested
-    //@Tag("ExceptionsVehicleTest")
-    //@DisplayName("Get incoming and exiting vehicle test exceptions")
-    //class ExceptionsVehicleTest {
-        //@Test
-        //public void processIncomingUnknownTest() {
-            // GIVEN
-            //when(inputReaderUtil.readSelection()).thenReturn(3);
+    @Nested
+    @Tag("ExceptionsVehicleTest")
+    @DisplayName("Get incoming and exiting vehicle test exceptions")
+    class ExceptionsVehicleTest {
+        @Test
+        public void processIncomingUnknownTest() {
+            // TODO: 24/06/2020 EXCEPTIONS tests 
+             ///GIVEN
+            when(inputReaderUtil.readSelection()).thenReturn(3);
+             //WHEN & THEN
+            assertThatThrownBy(() -> parkingService.getVehicleType()).isInstanceOf(IllegalArgumentException.class);
 
-
-            // WHEN
-            //assertThrows(Exception.class, () -> parkingService.getVehicleType());
-            //assertThatThrownBy(() -> parkingService.getNextParkingNumberIfAvailable()).isInstanceOf(IllegalArgumentException.class);
-            // THEN
-            //verify(inputReaderUtil, times(1)).readSelection();
-        //}
-    //}
+        }
+    }
 }

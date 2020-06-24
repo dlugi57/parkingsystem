@@ -72,7 +72,7 @@ public class ParkingService {
     public Boolean checkIncomingVehicle(String vehicleRegNumber) {
         Boolean checkVehicle = null;
         try {
-            Ticket checkTicket = new TicketDAO().checkTicket(vehicleRegNumber);
+            Ticket checkTicket = ticketDAO.checkTicket(vehicleRegNumber);
             if (checkTicket != null) {
                 if (checkTicket.getOutTime() == null){
                     checkVehicle = null;
