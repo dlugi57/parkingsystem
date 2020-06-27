@@ -22,6 +22,8 @@ import java.util.Date;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,6 +43,7 @@ public class ParkingServiceTest {
     @BeforeEach
     private void setUpPerTest() {
         try {
+
             when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 
             parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
@@ -107,6 +110,43 @@ public class ParkingServiceTest {
             verify(parkingSpotDAO, times(1)).updateParking(any(ParkingSpot.class));
         }
 
+
+        // TODO: 28/06/2020 put the name on it is when we don't put  the registration name  
+        @Test
+        @DisplayName("Given incoming car, when set registration number, then parking place will be allocated and ticket generated")
+        public void processIncomingCarTest1() {
+
+            try{
+                when(inputReaderUtil.readSelection()).thenReturn(1);
+                when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class)))
+                        .thenReturn(1);
+                when(inputReaderUtil.readVehicleRegistrationNumber()).thenThrow(new Exception());
+                //given(inputReaderUtil.readVehicleRegistrationNumber()).willThrow(new Exception());
+                //when(() -> myService.foo());
+                parkingService.processIncomingVehicle();
+                // WHEN
+
+
+                // THEN
+                verify(inputReaderUtil, times(1)).readSelection();
+                verify(parkingSpotDAO, times(1))
+                        .getNextAvailableSlot(any(ParkingType.class));
+                verify(inputReaderUtil, times(1)).readVehicleRegistrationNumber();
+
+            }catch (Exception e){
+
+            }
+
+
+
+        }
+
+
+
+
+
+
+
         @Test
         @DisplayName("Given incoming bike, when set registration number, then parking place will be allocated and ticket generated")
         public void processIncomingBikeTest() {
@@ -142,6 +182,8 @@ public class ParkingServiceTest {
 
         //getVehichleRegNumber
 
+
+
         @Test
         @Tag("getNextParkingNumberIfAvailableTest")
         @DisplayName("Get incoming and exiting vehicle test exceptions")
@@ -164,18 +206,37 @@ public class ParkingServiceTest {
 
         @Test
         @Tag("getNextParkingNumberIfAvailableTest")
-        @DisplayName("Get incoming and exiting vehicle test exceptions")
-        public void Given_fullParking_When_enterParking_Then_noTicketSaved() {
+        @DisplayName("Given vehicle type, when parking spot is not available , then parking number is null")
+        public void getNextParkingNumberIfNotAvailableTest() {
+            // GIVEN
             when(inputReaderUtil.readSelection()).thenReturn(1);
             when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class)))
                     .thenReturn(-1);
-            assertThatExceptionOfType(Exception.class)
-                    .isThrownBy(() -> parkingService.getNextParkingNumberIfAvailable()).withMessageMatching("Index: \\d+, Size: \\d+");
-            //assertThatThrownBy(() -> parkingService.getNextParkingNumberIfAvailable()).isInstanceOf(Exception.class);
+             // WHEN
+            ParkingSpot ps = parkingService.getNextParkingNumberIfAvailable();
 
+            // THEN
             verify(inputReaderUtil, times(1)).readSelection();
             verify(parkingSpotDAO, times(1))
                     .getNextAvailableSlot(any(ParkingType.class));
+            assertThat(ps).isEqualTo(null);
+        }
+
+        @Test
+        @Tag("getNextParkingNumberIfAvailableTest")
+        @DisplayName("Given vehicle type, when parking spot is not available , then parking number is null")
+        public void getNextParkingNumberIfAvailableWithWrongVehicleTypeTest() {
+            // GIVEN
+            when(inputReaderUtil.readSelection()).thenReturn(4);
+            //when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(-1);
+            // WHEN
+            ParkingSpot ps = parkingService.getNextParkingNumberIfAvailable();
+
+            // THEN
+            verify(inputReaderUtil, times(1)).readSelection();
+            //verify(parkingSpotDAO, times(1)).getNextAvailableSlot(any(ParkingType.class));
+            assertThat(ps).isEqualTo(null);
+
         }
 
         //getVehicleType
