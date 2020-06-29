@@ -31,7 +31,7 @@ public class ParkingService {
     public void processIncomingVehicle() {
         try {
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
-            String vehicleRegNumber = getVehichleRegNumber();
+            String vehicleRegNumber = getVehicleRegNumber();
 
             if (parkingSpot != null && parkingSpot.getId() > 0 && checkIncomingVehicle(vehicleRegNumber) != null) {
 
@@ -46,7 +46,7 @@ public class ParkingService {
                 ticket.setPrice(0);
                 ticket.setInTime(inTime);
                 ticket.setOutTime(null);
-                if (checkIncomingVehicle(vehicleRegNumber) == true){
+                if (checkIncomingVehicle(vehicleRegNumber) == true) {
                     logger.info("You will profit of: " + (100 - 100 * Fare.REDUCTION_OF_RECURRENT_USE) + " % of reduction.");
                     // TODO: 22/06/2020 how to test this
                     ticket.setRecurrentReduction(true);
@@ -62,7 +62,7 @@ public class ParkingService {
         }
     }
 
-    private String getVehichleRegNumber() throws Exception {
+    private String getVehicleRegNumber() throws Exception {
         System.out.println("Please type the vehicle registration number and press enter key");
         return inputReaderUtil.readVehicleRegistrationNumber();
     }
@@ -71,28 +71,22 @@ public class ParkingService {
     // TODO: 09/06/2020 check if car already exist to do not duplicate it and to set 5% of reduction
     public Boolean checkIncomingVehicle(String vehicleRegNumber) {
         Boolean checkVehicle = null;
-        try {
-            Ticket checkTicket = ticketDAO.checkTicket(vehicleRegNumber);
-            if (checkTicket != null) {
-                if (checkTicket.getOutTime() == null){
-                    checkVehicle = null;
-                    System.out.println("Vehicle already exist please type registration number once again");
-                    //throw new Exception("Vehicle already exist please type registration number once again");
 
-                    //already exist
-                }else{
-                    //recurrent
-                    checkVehicle = true;
-                }
-            } else{
-                //car don't exist
-                checkVehicle = false;
+        Ticket checkTicket = ticketDAO.checkTicket(vehicleRegNumber);
+        if (checkTicket != null) {
+            if (checkTicket.getOutTime() == null) {
+                //checkVehicle = null;
+                System.out.println("Vehicle already exist please type registration number once again");
+                //already exist
+            } else {
+                //recurrent
+                checkVehicle = true;
             }
-        } catch (IllegalArgumentException ie) {
-            logger.error("checkIncomingVehicle 1", ie);
-        } catch (Exception e) {
-            logger.error("checkIncomingVehicle 2", e);
+        } else {
+            //car don't exist
+            checkVehicle = false;
         }
+
         return checkVehicle;
     }
 
@@ -113,7 +107,7 @@ public class ParkingService {
             //throw new Exception("Error fetching parking number from DB. Parking slots might be full a");
         } catch (Exception e) {
             logger.error("Error fetching next available parking slot", e);
-          // throw new Exception("Error fetching parking number from DB. Parking slots might be full aa");
+            // throw new Exception("Error fetching parking number from DB. Parking slots might be full aa");
         }
         return parkingSpot;
     }
@@ -139,7 +133,7 @@ public class ParkingService {
 
     public void processExitingVehicle() {
         try {
-            String vehicleRegNumber = getVehichleRegNumber();
+            String vehicleRegNumber = getVehicleRegNumber();
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
 
             Date outTime = new Date();
