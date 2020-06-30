@@ -33,7 +33,7 @@ public class ParkingService {
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             String vehicleRegNumber = getVehicleRegNumber();
 
-            if (parkingSpot != null && parkingSpot.getId() > 0 && checkIncomingVehicle(vehicleRegNumber) != null) {
+            if (parkingSpot != null && checkIncomingVehicle(vehicleRegNumber) != null) {
 
                 parkingSpot.setAvailable(false);
                 parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false

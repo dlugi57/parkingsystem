@@ -196,7 +196,6 @@ public class ParkingServiceTest {
             when(inputReaderUtil.readSelection()).thenReturn(2);
             when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class)))
                     .thenReturn(1);
-           //Date outTime = null;
             ticket.setOutTime(null);
             when(ticketDAO.checkTicket(anyString())).thenReturn(ticket);
 
@@ -210,15 +209,24 @@ public class ParkingServiceTest {
             assertThat(parkingService.checkIncomingVehicle("ABCDE")).isEqualTo(null);
         }
 
+        @Test
+        @DisplayName("Given incoming car, when set wrong vehicle type, then message informing about wrong type car will shown")
+        public void processIncomingCarWithWrongVehicleTypeParkingTest() {
 
+            // GIVEN
+            when(inputReaderUtil.readSelection()).thenReturn(2);
+            when(parkingSpotDAO.getNextAvailableSlot(null))
+                    .thenReturn(-1);
+            ticket.setOutTime(null);
 
-
-
-
-
-
-
-
+            // WHEN
+            parkingService.processIncomingVehicle();
+            // THEN
+            verify(inputReaderUtil, times(1)).readSelection();
+            verify(parkingSpotDAO, times(1))
+                    .getNextAvailableSlot(any(ParkingType.class));
+            assertThat(parkingService.getNextParkingNumberIfAvailable()).isEqualTo(null);
+        }
 
         @Test
         @Tag("checkIncomingVehicleTest")

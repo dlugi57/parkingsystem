@@ -34,6 +34,7 @@ public class FareCalculatorService {
                 break;
             }
             default:
+                // TODO: 30/06/2020 normally when this switch use enum how to test this default dependency? 
                 throw new IllegalArgumentException("Unknown Parking Type");
         }
     }
