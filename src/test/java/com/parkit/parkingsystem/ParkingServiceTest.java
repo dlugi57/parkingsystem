@@ -51,7 +51,6 @@ public class ParkingServiceTest {
             ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
             ticket.setParkingSpot(parkingSpot);
             ticket.setVehicleRegNumber("ABCDEF");
-            // TODO: 24/06/2020 make some clean with the tickets
             ticket.setOutTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
 
             when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);

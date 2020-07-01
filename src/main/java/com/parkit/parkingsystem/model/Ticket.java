@@ -42,7 +42,6 @@ public class Ticket {
     }
 
     public void setPrice(double price) {
-        // TODO: 13/06/2020 is that is in right place ? 
         this.price = RoundUtil.round(price, 2);
     }
 

@@ -32,7 +32,6 @@ public class ParkingService {
         try {
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             String vehicleRegNumber = getVehicleRegNumber();
-
             if (parkingSpot != null && checkIncomingVehicle(vehicleRegNumber) != null) {
 
                 parkingSpot.setAvailable(false);
@@ -48,7 +47,7 @@ public class ParkingService {
                 ticket.setOutTime(null);
                 if (checkIncomingVehicle(vehicleRegNumber) == true) {
                     logger.info("You will profit of: " + (100 - 100 * Fare.REDUCTION_OF_RECURRENT_USE) + " % of reduction.");
-                    // TODO: 22/06/2020 how to test this
+
                     ticket.setRecurrentReduction(true);
                 }
 
@@ -67,8 +66,6 @@ public class ParkingService {
         return inputReaderUtil.readVehicleRegistrationNumber();
     }
 
-    // TODO: 17/06/2020 Dirty code 
-    // TODO: 09/06/2020 check if car already exist to do not duplicate it and to set 5% of reduction
     public Boolean checkIncomingVehicle(String vehicleRegNumber) {
         Boolean checkVehicle = null;
 
