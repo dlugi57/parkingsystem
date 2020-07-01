@@ -9,16 +9,13 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static junit.framework.Assert.assertNotNull;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -62,25 +59,27 @@ public class ParkingDataBaseIT {
         //TODO: check that a ticket is actually saved in DB and Parking table is updated with availability
         ParkingSpot parkingSpot = parkingService.getNextParkingNumberIfAvailable();
         // TODO: 01/07/2020  parkingSpot.isAvailable()
-
-        assertThat(parkingSpot.getId()).isEqualTo(2);
+        assertThat(parkingSpot.isAvailable()).isEqualTo(true);
+        //assertThat(parkingSpot.getId()).isEqualTo(2);
+        // TODO: 01/07/2020 clean this because in the first test is false  
         assertThat(parkingService.checkIncomingVehicle("ABCDEF")).isEqualTo(null);
 
     }
 
     @Test
     public void testParkingLotExit(){
-        // TODO: 01/07/2020 if that is ok ?? 
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
         // TODO: 01/07/2020  ticketDAO .change hour of entering
+
+
+        dataBasePrepareService.updateInTimeEntries(ticketDAO.getTicket("ABCDEF"), 3600000);
         parkingService.processExitingVehicle();
         //TODO: check that the fare generated and out time are populated correctly in the database
-
         Ticket ticket = ticketDAO.getTicket("ABCDEF");
-        // TODO: 01/07/2020 how to check if the value is not null?
+
         assertNotNull(ticket.getOutTime());
-        assertThat(ticket.getPrice()).isEqualTo(0);
+        assertThat(ticket.getPrice()).isEqualTo(Fare.CAR_RATE_PER_HOUR);
 
     }
 
