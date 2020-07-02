@@ -41,7 +41,7 @@ public class ParkingServiceTest {
     private ParkingSpot parkingSpot;
 
     @BeforeEach
-    private void setUpPerTest() {
+    private void setUpPerTest() throws Exception {
         try {
 
             when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");

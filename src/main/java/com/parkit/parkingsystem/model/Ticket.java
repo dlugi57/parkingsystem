@@ -4,14 +4,56 @@ import com.parkit.parkingsystem.util.RoundUtil;
 
 import java.util.Date;
 
+/**
+ * Application ticket object
+ */
 public class Ticket {
+
+    /**
+     * Unique id of the ticket
+     */
     private int id;
+
+    /**
+     * Parking number of the ticket vehicle
+     */
     private ParkingSpot parkingSpot;
+
+    /**
+     * registration number of vehicle
+     */
     private String vehicleRegNumber;
+
+    /**
+     * fare to pay after exiting the vehicle
+     */
     private double price;
+
+    /**
+     * entering time
+     */
     private Date inTime;
+    /**
+     * exiting time
+     */
     private Date outTime;
+    /**
+     * reduction when recurrent user
+     */
     private boolean recurrentReduction;
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "id=" + id +
+                ", parkingSpot=" + parkingSpot +
+                ", vehicleRegNumber='" + vehicleRegNumber + '\'' +
+                ", price=" + price +
+                ", inTime=" + inTime +
+                ", outTime=" + outTime +
+                ", recurrentReduction=" + recurrentReduction +
+                '}';
+    }
 
     public int getId() {
         return id;
