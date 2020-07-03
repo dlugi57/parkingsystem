@@ -49,3 +49,15 @@ The app has unit tests and integration tests written. More of these need to be a
 To run the tests from maven, go to the folder that contains the pom.xml file and execute the below command.
 
 `mvn test`
+
+### Build jar with maven 
+
+Open maven project box by a click on the search icon and type maven, 
+
+Click on clean, then click on 
+
+`install`
+
+If not go to the folder that contains the pom.xml file and execute the below command.
+
+`mvn install`
