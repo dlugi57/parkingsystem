@@ -15,13 +15,10 @@ import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 
 public class FareCalculatorServiceTest {
 
     private static FareCalculatorService fareCalculatorService;
-    //private static RoundUtil roundUtil;
     private static Instant startedAt;
     private Ticket ticket;
 
@@ -79,7 +76,6 @@ public class FareCalculatorServiceTest {
             ticket.setInTime(inTime);
             ticket.setOutTime(null);
             ticket.setParkingSpot(parkingSpot);
-
             // THEN
             assertThatThrownBy(() -> fareCalculatorService.calculateFare(ticket)).isInstanceOf(NullPointerException.class);
         }
@@ -105,7 +101,6 @@ public class FareCalculatorServiceTest {
     @Tag("CalculateFareTests")
     @DisplayName("Get fare after different calculations")
     class CalculateFareTests {
-
         @Test
         @DisplayName("Given car parked for one hour, when do the calculation, then fare should be equal to the car rate per hour")
         public void calculateFareCarTest() {

@@ -61,7 +61,7 @@ public class ParkingService {
                 ticket.setOutTime(null);
                 //if user already entering the parking give them some reduction
                 if (checkIncomingVehicle(vehicleRegNumber)) {
-                    logger.info("You will profit of: " + (100 - 100 * Fare.REDUCTION_OF_RECURRENT_USE) + " % of reduction.");
+                    logger.info("Welcome back! As a recurring user of our parking lot, you'll benefit from a " + (100 - 100 * Fare.REDUCTION_OF_RECURRENT_USE) + "% discount");
                     ticket.setRecurrentReduction(true);
                 }
                 //set ticket information

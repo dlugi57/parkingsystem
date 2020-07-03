@@ -43,18 +43,14 @@ public class ParkingServiceTest {
     @BeforeEach
     private void setUpPerTest() throws Exception {
         try {
-
             when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-
             parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
             ticket = new Ticket();
             ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
             ticket.setParkingSpot(parkingSpot);
             ticket.setVehicleRegNumber("ABCDEF");
             ticket.setOutTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
-
             when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
-
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,7 +65,6 @@ public class ParkingServiceTest {
         @Test
         @DisplayName("Given exiting car, when set registration number, then parking place will be reinitialized and ticket updated")
         public void processExitingVehicleTest() {
-
             // GIVEN
             when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
             when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
@@ -77,7 +72,6 @@ public class ParkingServiceTest {
             parkingService.processExitingVehicle();
             // THEN
             verify(parkingSpotDAO, times(1)).updateParking(any(ParkingSpot.class));
-
             verify(ticketDAO, times(1)).getTicket(anyString());
             verify(ticketDAO, times(1)).updateTicket(any(Ticket.class));
         }
@@ -100,14 +94,12 @@ public class ParkingServiceTest {
         @Test
         @DisplayName("Given exiting car, when set registration number and update ticker error, then inform user about update ticker error")
         public void processExitingVehicleWithUpdateTicketProblemTest() {
-
             // GIVEN
             when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
             when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(false);
             // WHEN
             parkingService.processExitingVehicle();
             // THEN
-
             verify(ticketDAO, times(1)).getTicket(anyString());
             verify(ticketDAO, times(1)).updateTicket(any(Ticket.class));
         }
@@ -126,7 +118,6 @@ public class ParkingServiceTest {
                     .thenReturn(1);
             when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
             when(ticketDAO.checkTicket(anyString())).thenReturn(ticket);
-
             // WHEN
             parkingService.processIncomingVehicle();
             // THEN
@@ -145,7 +136,6 @@ public class ParkingServiceTest {
             when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class)))
                     .thenReturn(4);
             when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
-
             // WHEN
             parkingService.checkIncomingVehicle("ABCDE");
             parkingService.processIncomingVehicle();
@@ -160,7 +150,6 @@ public class ParkingServiceTest {
         @Test
         @DisplayName("Given incoming car, when we don't set registration number, then some exceptions will thrown")
         public void processIncomingCarTestWithWrongRegistrationNumber() {
-
             try {
                 // GIVEN
                 when(inputReaderUtil.readSelection()).thenReturn(1);
@@ -174,30 +163,21 @@ public class ParkingServiceTest {
                 verify(parkingSpotDAO, times(1))
                         .getNextAvailableSlot(any(ParkingType.class));
                 verify(inputReaderUtil, times(1)).readVehicleRegistrationNumber();
-
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException("Test of processIncomingCarTest success");
             }
         }
 
-
-
-
-
-
-
         @Test
         @DisplayName("Given incoming car, when set registration number and vehicle exist in parking place, then some exceptions will thrown")
         public void processIncomingCarWithExistingCarInParkingTest() {
-
             // GIVEN
             when(inputReaderUtil.readSelection()).thenReturn(2);
             when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class)))
                     .thenReturn(1);
             ticket.setOutTime(null);
             when(ticketDAO.checkTicket(anyString())).thenReturn(ticket);
-
             // WHEN
             parkingService.processIncomingVehicle();
             // THEN
@@ -211,13 +191,11 @@ public class ParkingServiceTest {
         @Test
         @DisplayName("Given incoming car, when set wrong vehicle type, then message informing about wrong type car will shown")
         public void processIncomingCarWithWrongVehicleTypeParkingTest() {
-
             // GIVEN
             when(inputReaderUtil.readSelection()).thenReturn(2);
             when(parkingSpotDAO.getNextAvailableSlot(null))
                     .thenReturn(-1);
             ticket.setOutTime(null);
-
             // WHEN
             parkingService.processIncomingVehicle();
             // THEN
@@ -235,7 +213,6 @@ public class ParkingServiceTest {
             when(ticketDAO.checkTicket(anyString())).thenReturn(ticket);
             // WHEN
             Boolean checkVehicle = parkingService.checkIncomingVehicle("ABCDE123");
-
             verify(ticketDAO, times(1)).checkTicket(anyString());
             // THEN
             assertThat(checkVehicle).isEqualTo(true);
@@ -257,19 +234,18 @@ public class ParkingServiceTest {
 
         @Test
         @Tag("getNextParkingNumberIfAvailableTest")
-        @DisplayName("Get incoming and exiting vehicle test exceptions")
-        void getNextParkingNumberIfAvailableTest() throws Exception {
-
+        @DisplayName("Given parking type, when parking spot is available, then parking number is attributed")
+        void getNextParkingNumberIfAvailableTest() {
+            // GIVEN
             when(inputReaderUtil.readSelection()).thenReturn(1);
             when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class)))
                     .thenReturn(1);
+            // WHEN
             ParkingSpot ps = parkingService.getNextParkingNumberIfAvailable();
-
+            // THEN
             verify(inputReaderUtil, times(1)).readSelection();
             verify(parkingSpotDAO, times(1))
                     .getNextAvailableSlot(any(ParkingType.class));
-
-            //assert
             assertThat(ps.getId()).isEqualTo(1);
             assertThat(ps.getParkingType()).isEqualTo(ParkingType.CAR);
             assertThat(ps.isAvailable()).isEqualTo(true);
@@ -305,16 +281,12 @@ public class ParkingServiceTest {
             // THEN
             verify(inputReaderUtil, times(1)).readSelection();
             assertThat(ps).isEqualTo(null);
-
         }
-
-        //getVehicleType
     }
-
 
     @Nested
     @Tag("ExceptionsVehicleTest")
-    @DisplayName("Get incoming and exiting vehicle test exceptions")
+    @DisplayName("Given unknown perking type, when parking type unknown, then call exception")
     class ExceptionsVehicleTest {
         @Test
         public void processIncomingUnknownTest() {

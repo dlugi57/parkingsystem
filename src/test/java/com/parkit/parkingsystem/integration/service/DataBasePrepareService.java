@@ -33,14 +33,11 @@ public class DataBasePrepareService {
         Connection connection = null;
         try{
             connection = dataBaseTestConfig.getConnection();
-
             //set parking entries to available
             PreparedStatement ps = connection.prepareStatement("update ticket set IN_TIME=? where ID=?");
             ps.setTimestamp(1, new Timestamp(ticket.getInTime().getTime() - additionalTime));
             ps.setInt(2,ticket.getId());
             ps.execute();
-
-
         }catch (Exception ex){
             ex.printStackTrace();
         }finally {

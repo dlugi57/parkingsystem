@@ -30,7 +30,7 @@ public class ParkingDataBaseIT {
     private static InputReaderUtil inputReaderUtil;
 
     @BeforeAll
-    private static void setUp(){
+    private static void setUp() {
         parkingSpotDAO = new ParkingSpotDAO();
         parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
         ticketDAO = new TicketDAO();
@@ -45,42 +45,32 @@ public class ParkingDataBaseIT {
         dataBasePrepareService.clearDataBaseEntries();
     }
 
-    @AfterAll
-    private static void tearDown(){
-
-    }
-
     @Test
-    public void testParkingACar(){
+    @DisplayName("Given the entering vehicle, when process, then save the ticket id DB and updated availability of parking spot")
+    public void testParkingACar() {
+        // GIVEN
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        // WHEN
         parkingService.processIncomingVehicle();
-
-        //parkingSpot.getId() > 0
-        //TODO: check that a ticket is actually saved in DB and Parking table is updated with availability
         ParkingSpot parkingSpot = parkingService.getNextParkingNumberIfAvailable();
-        // TODO: 01/07/2020  parkingSpot.isAvailable()
+        // THEN
         assertThat(parkingSpot.isAvailable()).isEqualTo(true);
-        //assertThat(parkingSpot.getId()).isEqualTo(2);
-        // TODO: 01/07/2020 clean this because in the first test is false  
         assertThat(parkingService.checkIncomingVehicle("ABCDEF")).isEqualTo(null);
-
     }
 
     @Test
-    public void testParkingLotExit(){
+    @DisplayName("Given exiting vehicle, when process, then generate the fare and populate out time")
+    public void testParkingLotExit() {
+        // GIVEN
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
-        // TODO: 01/07/2020  ticketDAO .change hour of entering
-
-
         dataBasePrepareService.updateInTimeEntries(ticketDAO.getTicket("ABCDEF"), 3600000);
+        // WHEN
         parkingService.processExitingVehicle();
-        //TODO: check that the fare generated and out time are populated correctly in the database
         Ticket ticket = ticketDAO.getTicket("ABCDEF");
-
+        // THEN
         assertNotNull(ticket.getOutTime());
         assertThat(ticket.getPrice()).isEqualTo(Fare.CAR_RATE_PER_HOUR);
-
     }
 
 }
