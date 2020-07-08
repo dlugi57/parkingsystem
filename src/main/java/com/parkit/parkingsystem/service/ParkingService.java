@@ -61,7 +61,7 @@ public class ParkingService {
                 ticket.setOutTime(null);
                 //if user already entering the parking give them some reduction
                 if (checkIncomingVehicle(vehicleRegNumber)) {
-                    logger.info("Welcome back! As a recurring user of our parking lot, you'll benefit from a " + (100 - 100 * Fare.REDUCTION_OF_RECURRENT_USE) + "% discount");
+                    System.out.println("Welcome back! As a recurring user of our parking lot, you'll benefit from a " + (100 - 100 * Fare.REDUCTION_OF_RECURRENT_USE) + "% discount");
                     ticket.setRecurrentReduction(true);
                 }
                 //set ticket information
@@ -121,7 +121,6 @@ public class ParkingService {
      * @return information about parking spot
      */
     public ParkingSpot getNextParkingNumberIfAvailable() {
-        // TODO: 03/07/2020 how to clean this warning?
         int parkingNumber = 0;
         ParkingSpot parkingSpot = null;
         try {

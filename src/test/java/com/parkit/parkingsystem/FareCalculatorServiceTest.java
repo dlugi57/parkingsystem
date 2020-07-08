@@ -77,7 +77,7 @@ public class FareCalculatorServiceTest {
             ticket.setOutTime(null);
             ticket.setParkingSpot(parkingSpot);
             // THEN
-            assertThatThrownBy(() -> fareCalculatorService.calculateFare(ticket)).isInstanceOf(NullPointerException.class);
+            assertThatThrownBy(() -> fareCalculatorService.calculateFare(ticket)).isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test

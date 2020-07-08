@@ -13,8 +13,11 @@ public class FareCalculatorService {
      */
     public void calculateFare(Ticket ticket) {
         if ((ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()))) {
-            // TODO: 03/07/2020 how to calm this warning? 
-            throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
+            if (ticket.getOutTime() != null){
+                throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
+            }else{
+                throw new IllegalArgumentException("Out time provided is null.");
+            }
         }
         //calculate duration 
         double inHour = ticket.getInTime().getTime();

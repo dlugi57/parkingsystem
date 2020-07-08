@@ -55,7 +55,6 @@ public class ParkingSpot {
         isAvailable = available;
     }
 
-    // TODO: 02/07/2020 whats that ??
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -64,7 +63,6 @@ public class ParkingSpot {
         return number == that.number;
     }
 
-    // TODO: 02/07/2020 whats that?
     @Override
     public int hashCode() {
         return number;

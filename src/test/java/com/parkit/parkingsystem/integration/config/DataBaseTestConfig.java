@@ -18,7 +18,7 @@ public class DataBaseTestConfig extends DataBaseConfig {
                         + "useUnicode=true"
                         + "&useJDBCCompliantTimezoneShift=true"
                         + "&useLegacyDatetimeCode=false"
-                        + "&serverTimezone=UTC", "piotr", "");
+                        + "&serverTimezone=UTC", "root", "");
     }
 
     public void closeConnection(Connection con){
